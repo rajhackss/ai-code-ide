@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
-const STORAGE_KEY = 'ide-files';
+const STORAGE_KEY = 'ide-files-v2';
 
 export type FileType = 'file' | 'folder';
 
