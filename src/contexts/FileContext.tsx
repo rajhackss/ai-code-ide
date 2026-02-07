@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
-const STORAGE_KEY = 'ide-files-v2';
+const STORAGE_KEY = 'ide-files-v3';
 
 export type FileType = 'file' | 'folder';
 
@@ -39,13 +39,11 @@ const initialFiles: FileNode[] = [
                 type: 'file',
                 language: 'markdown',
                 parentId: 'root',
-                content: `# Welcome to your Local IDE
+                content: `# Welcome to your AI-Based Web IDE
 
-This is a lightweight, local-only IDE.
+This is a lightweight, AI-Based IDE.
 
-- **Files are saved to your browser's Local Storage.**
-- **No cloud sync.**
-- **Create files (.c, .py, .java) to test Predictive Code.**
+- **Create files (.c, .py, .java) **
 
 Start coding by creating a new file!`
             }
