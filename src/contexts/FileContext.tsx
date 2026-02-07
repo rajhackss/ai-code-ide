@@ -35,71 +35,19 @@ const initialFiles: FileNode[] = [
         children: [
             {
                 id: '1',
-                name: 'App.tsx',
+                name: 'Welcome.md',
                 type: 'file',
-                language: 'typescript',
+                language: 'markdown',
                 parentId: 'root',
-                content: `import React from 'react';
+                content: `# Welcome to your Local IDE
 
-export default function App() {
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold">Hello World</h1>
-    </div>
-  );
-}`
-            },
-            {
-                id: '2',
-                name: 'index.css',
-                type: 'file',
-                language: 'css',
-                parentId: 'root',
-                content: `@import "tailwindcss";
+This is a lightweight, local-only IDE.
 
-body {
-  @apply bg-gray-950 text-white;
-}`
-            },
-            {
-                id: '3',
-                name: 'utils.ts',
-                type: 'file',
-                language: 'typescript',
-                parentId: 'root',
-                content: `export function add(a: number, b: number) {
-  return a + b;
-}`
-            },
-            {
-                id: '4',
-                name: 'hello.py',
-                type: 'file',
-                language: 'python',
-                parentId: 'root',
-                content: `# Python Example
-def greet(name):
-    return f"Hello, {name}!"
+- **Files are saved to your browser's Local Storage.**
+- **No cloud sync.**
+- **Create files (.c, .py, .java) to test Predictive Code.**
 
-print(greet("World"))
-print("2 + 2 =", 2 + 2)`
-            },
-            {
-                id: '5',
-                name: 'script.js',
-                type: 'file',
-                language: 'javascript',
-                parentId: 'root',
-                content: `// JavaScript Example
-function fibonacci(n) {
-    if (n <= 1) return n;
-    return fibonacci(n - 1) + fibonacci(n - 2);
-}
-
-console.log("Fibonacci sequence:");
-for (let i = 0; i < 10; i++) {
-    console.log(fibonacci(i));
-}`
+Start coding by creating a new file!`
             }
         ]
     }
