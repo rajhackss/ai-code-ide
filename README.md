@@ -10,19 +10,18 @@ A powerful, browser-based Integrated Development Environment (IDE) built with mo
 
 ### 💻 Advanced Editor
 -   **Powered by Monaco Editor**: The same editor engine as VS Code.
--   **Predictive Code & Autocomplete**: Intelligent snippets and keyword completion for:
-    -   **C / C++**: `#include`, `main`, `printf`, loops, and standard keywords.
-    -   **Python**: `def`, `class`, `if/else`, `print`.
-    -   **Java**: `psvm`, `sout`, class structures.
+-   **Predictive Code & Autocomplete**: Intelligent snippets and keyword completion for various languages.
+-   **Realtime HTML Preview**: Instant split-view preview for HTML files with support for inline CSS and JS.
 -   **Syntax Highlighting**: Support for JavaScript, TypeScript, Python, Java, C++, C, C#, Rust, Go, PHP, Ruby, and more.
 
 ### 🤖 AI Integration
--   **AI Assistant**: Built-in chat panel for coding help and explanations using Google Gemini API.
--   **1-Click Code Fix**: "Fix Errors" button that automatically analyzes and corrects bugs in your code using Generative AI.
+-   **Smart AI Assistant**: Enhanced chat interface with **Markdown support** (code blocks, lists, bold text) and Google-like fonts (Inter, JetBrains Mono).
+-   **Powered by Gemini**: Uses the latest Google Gemini models for accurate coding help.
+-   **1-Click Code Fix**: "Fix Errors" button that automatically analyzes and corrects bugs.
 
 ### ⚡ Seamless Workflow
 -   **Flat File System**: Simplified file explorer with root-level file management.
--   **Local-Only Storage**: Your files are automatically saved to your browser's **Local Storage** for privacy and offline capability.
+-   **Local-Only Storage**: Your files are automatically saved to your browser's **Local Storage**.
 -   **Multi-Language Runner**: Execute code directly in the browser using the Piston API.
 -   **Integrated Terminal**: View real-time output and errors.
 

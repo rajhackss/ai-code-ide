@@ -1,14 +1,21 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Editor, { type OnMount } from '@monaco-editor/react';
-import { useFileContext } from '../contexts/FileContext';
+import { useFileContext, type FileNode } from '../contexts/FileContext';
 import { generateAIResponse } from '../lib/ai';
-import { Wand2, Loader2 } from 'lucide-react';
+import { Wand2, Loader2, Eye, EyeOff } from 'lucide-react';
 
 export function CodeEditor() {
-    const { activeFile, updateFileContent } = useFileContext();
+    const { activeFile, updateFileContent, files } = useFileContext();
     const [isFixing, setIsFixing] = useState(false);
     const [fixStatus, setFixStatus] = useState<string | null>(null);
+    const [showPreview, setShowPreview] = useState(false);
+    const [previewContent, setPreviewContent] = useState('');
     const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
+
+    // ... (Keep existing handleEditorDidMount logic - abbreviated for brevity if unchanged, but I must return full content)
+    // Actually, I need to include the full handleEditorDidMount to ensure no code is lost.
+    // To save space in this tool call, I will retain the existing logic but I must provide the FULL replacement for the chunk or file.
+    // Since I'm replacing the whole file effectively to add state and rendering logic, I'll include the mount handler.
 
     const handleEditorDidMount: OnMount = (editor, monaco) => {
         editorRef.current = editor;
@@ -223,6 +230,58 @@ ${activeFile.content}`;
         }
     };
 
+    // --- HTML PREVIEW LOGIC ---
+    useEffect(() => {
+        if (!activeFile || !showPreview) return;
+        if (activeFile.language !== 'html') {
+            setPreviewContent('<div style="color: #666; padding: 20px; font-family: sans-serif;">Preview is only available for HTML files.</div>');
+            return;
+        }
+
+        let html = activeFile.content || '';
+
+        // Inline CSS
+        // Simple regex to find <link rel="stylesheet" href="..."> and replace with <style>...</style>
+        // Note: This is a basic implementation and works for files in the same virtual context.
+        html = html.replace(/<link[^>]+href=["']([^"']+)["'][^>]*>/g, (match, href) => {
+            if (match.includes('stylesheet')) {
+                // Find the file in our context
+                // This is a flat search, simpler. Ideally we'd resolve paths.
+                const cssFile = searchFile(files, href);
+                if (cssFile && cssFile.content) {
+                    return `<style>\n${cssFile.content}\n</style>`;
+                }
+            }
+            return match;
+        });
+
+        // Inline JS
+        // <script src="..."></script>
+        html = html.replace(/<script[^>]+src=["']([^"']+)["'][^>]*><\/script>/g, (match, src) => {
+            const jsFile = searchFile(files, src);
+            if (jsFile && jsFile.content) {
+                return `<script>\n${jsFile.content}\n</script>`;
+            }
+            return match;
+        });
+
+        setPreviewContent(html);
+
+    }, [activeFile, files, showPreview]);
+
+    // Recursive search helper
+    const searchFile = (nodes: FileNode[], name: string): FileNode | undefined => {
+        for (const node of nodes) {
+            if (node.type === 'file' && node.name === name) return node;
+            if (node.children) {
+                const found = searchFile(node.children, name);
+                if (found) return found;
+            }
+        }
+        return undefined;
+    };
+
+
     if (!activeFile) {
         return (
             <div className="flex-1 h-full bg-[#1e1e1e] flex items-center justify-center text-gray-500">
@@ -241,6 +300,20 @@ ${activeFile.content}`;
                     <span className="text-gray-600">{activeFile.language}</span>
                 </div>
                 <div className="flex items-center gap-2">
+                    {/* HTML Preview Toggle */}
+                    {activeFile.language === 'html' && (
+                        <button
+                            onClick={() => setShowPreview(!showPreview)}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded transition-colors
+                                ${showPreview
+                                    ? 'bg-blue-600 text-white hover:bg-blue-500'
+                                    : 'bg-gray-800 text-gray-400 hover:text-gray-200'}`}
+                        >
+                            {showPreview ? <EyeOff size={12} /> : <Eye size={12} />}
+                            {showPreview ? 'Hide Preview' : 'Show Preview'}
+                        </button>
+                    )}
+
                     {fixStatus && (
                         <span className={`text-xs ${fixStatus.startsWith('✓') ? 'text-green-400' : fixStatus.startsWith('Error') ? 'text-red-400' : 'text-gray-400'}`}>
                             {fixStatus}
@@ -261,26 +334,44 @@ ${activeFile.content}`;
                 </div>
             </div>
 
-            {/* Monaco Editor */}
-            <div className="flex-1">
-                <Editor
-                    height="100%"
-                    path={activeFile.id}
-                    language={activeFile.language || 'typescript'}
-                    value={activeFile.content}
-                    theme="vs-dark"
-                    onMount={handleEditorDidMount}
-                    onChange={(value) => updateFileContent(activeFile.id, value || '')}
-                    options={{
-                        minimap: { enabled: false },
-                        fontSize: 14,
-                        fontFamily: 'JetBrains Mono, monospace',
-                        lineNumbers: 'on',
-                        scrollBeyondLastLine: false,
-                        automaticLayout: true,
-                        padding: { top: 16 }
-                    }}
-                />
+            {/* Editor and Preview Area */}
+            <div className="flex-1 flex overflow-hidden">
+                {/* Monaco Editor */}
+                <div className={`h-full transition-all duration-300 ${showPreview ? 'w-1/2 border-r border-gray-800' : 'w-full'}`}>
+                    <Editor
+                        height="100%"
+                        path={activeFile.id}
+                        language={activeFile.language || 'typescript'}
+                        value={activeFile.content}
+                        theme="vs-dark"
+                        onMount={handleEditorDidMount}
+                        onChange={(value) => updateFileContent(activeFile.id, value || '')}
+                        options={{
+                            minimap: { enabled: false },
+                            fontSize: 14,
+                            fontFamily: 'JetBrains Mono, monospace',
+                            lineNumbers: 'on',
+                            scrollBeyondLastLine: false,
+                            automaticLayout: true,
+                            padding: { top: 16 }
+                        }}
+                    />
+                </div>
+
+                {/* Live Preview */}
+                {showPreview && (
+                    <div className="w-1/2 h-full bg-white relative">
+                        <div className="absolute top-0 right-0 bg-gray-200 text-gray-500 text-[10px] px-2 py-1 z-10 rounded-bl">
+                            Preview
+                        </div>
+                        <iframe
+                            title="Preview"
+                            srcDoc={previewContent}
+                            className="w-full h-full border-none"
+                            sandbox="allow-scripts allow-modals"
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );
