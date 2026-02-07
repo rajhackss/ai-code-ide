@@ -1,35 +1,39 @@
-# Modern Ai-Based Web IDE
+# Modern AI-Powered Web IDE
 
-A powerful, browser-based Integrated Development Environment (IDE) built with modern web technologies. This project features a robust code editor, multi-language code execution, and an AI assistant panel.
+A powerful, browser-based Integrated Development Environment (IDE) built with modern web technologies. This project features a robust code editor with predictive text, multi-language code execution, and an AI assistant panel—all running in a lightweight, local-only architecture.
 
-## 🚀 Features
+## 🚀 Key Features
 
--   **Advanced Code Editor**: Powered by [Monaco Editor](https://microsoft.github.io/monaco-editor/) (VS Code's editor), supporting syntax highlighting, sensing, and more.
--   **Multi-Language Execution**: Execute code directly in the browser using the [Piston API](https://github.com/engineer-man/piston). Supported languages include:
-    -   JavaScript, TypeScript
-    -   Python
-    -   Java, C++, C, C#
-    -   Rust, Go
-    -   PHP, Ruby
--   **File Management**: Create, edit, and organize files within the IDE (Virtual File System).
--   **AI Assistance**: Integrated AI Panel for coding help and suggestions.
--   **Responsive Design**: A modern, clean interface built with Tailwind CSS.
--   **Integrated Terminal**: View execution output and errors in a built-in terminal window.
+### 💻 Advanced Editor
+-   **Powered by Monaco Editor**: The same editor engine as VS Code.
+-   **Predictive Code & Autocomplete**: Intelligent snippets and keyword completion for:
+    -   **C / C++**: `#include`, `main`, `printf`, loops, and standard keywords.
+    -   **Python**: `def`, `class`, `if/else`, `print`.
+    -   **Java**: `psvm`, `sout`, class structures.
+-   **Syntax Highlighting**: Support for JavaScript, TypeScript, Python, Java, C++, C, C#, Rust, Go, PHP, Ruby, and more.
+
+### 🤖 AI Integration
+-   **AI Assistant**: Built-in chat panel for coding help and explanations.
+-   **1-Click Code Fix**: "Fix Errors" button that automatically analyzes and corrects bugs in your code using Generative AI.
+
+### 🔒 Local-Only Storage
+-   **Privacy First**: No cloud database required.
+-   **Offline Capable**: Your files are automatically saved to your browser's **Local Storage**.
+-   **Persistent Workspace**: Your work remains safe even if you close or reload the browser.
+
+### ⚡ Execution & Tools
+-   **Multi-Language Runner**: Execute code directly in the browser using the Piston API.
+-   **Integrated Terminal**: View real-time output and errors.
+-   **File Management**: Create, edit, delete, and organize files in a virtual file system.
 
 ## 🛠️ Tech Stack
 
-This project is built using the following technologies and libraries:
-
--   **Frontend Framework**: [React](https://react.dev/) (v19)
--   **Build Tool**: [Vite](https://vitejs.dev/)
+-   **Frontend**: [React](https://react.dev/) (v19) + [Vite](https://vitejs.dev/)
 -   **Language**: [TypeScript](https://www.typescriptlang.org/)
--   **Styling**:
-    -   [Tailwind CSS](https://tailwindcss.com/) (v4)
-    -   `clsx` & `tailwind-merge` for dynamic class management
-    -   [PostCSS](https://postcss.org/) & [Autoprefixer](https://github.com/postcss/autoprefixer)
+-   **Styling**: [Tailwind CSS](https://tailwindcss.com/) (v4) + `clsx`
+-   **Editor**: [`@monaco-editor/react`](https://github.com/suren-atoyan/monaco-react)
 -   **Icons**: [Lucide React](https://lucide.dev/)
--   **Editor Component**: [`@monaco-editor/react`](https://github.com/suren-atoyan/monaco-react)
--   **Linting**: [ESLint](https://eslint.org/)
+-   **AI**: OpenRouter API integration
 
 ## 📦 Installation & Setup
 
@@ -44,22 +48,30 @@ This project is built using the following technologies and libraries:
     npm install
     ```
 
-3.  **Start the development server**
+3.  **Configure Environment**
+    Create a `.env` file in the root directory and add your OpenRouter API key:
+    ```env
+    VITE_OPENROUTER_API_KEY=your_api_key_here
+    ```
+
+4.  **Start the development server**
     ```bash
     npm run dev
     ```
 
-4.  **Build for production**
+5.  **Build for production**
     ```bash
     npm run build
     ```
 
-## 🎮 Usage
+## 🎮 Usage Guide
 
-1.  **Edit Code**: Select a file from the sidebar or create a new one. Write code in the main editor window.
-2.  **Run Code**: Click the "Run" button to execute your code via the Piston API.
-3.  **View Output**: Results will appear in the specific terminal/output panel.
-4.  **AI Help**: Open the AI panel to get assistance with your code.
+1.  **File Explorer**: Use the sidebar to create (`+`) files.
+    -   *Tip*: Use `.c`, `.cpp`, `.py`, or `.java` extensions to enable predictive text.
+2.  **Coding**: Type code in the editor.
+    -   *Try*: Type `inc` in C for `#include`, or `psvm` in Java for `main`.
+3.  **Run Code**: Click the **Run** button (top right) to execute.
+4.  **Fix Errors**: Click the **Wand Icon** to have AI instantly debug your code.
 
 ## 🤝 Contributing
 

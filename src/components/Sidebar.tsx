@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Files, Folder, FileCode, Plus, Search, ChevronRight, ChevronDown, Trash2, X } from 'lucide-react';
 import { useFileContext, type FileNode } from '../contexts/FileContext';
 
+// ... (FileItem component remains unchanged)
+
 const FileItem = ({ node, depth, activeFileId, onSelect, onToggle, onDelete }: {
     node: FileNode;
     depth: number;

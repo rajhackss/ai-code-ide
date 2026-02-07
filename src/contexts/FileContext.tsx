@@ -1,4 +1,6 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+
+const STORAGE_KEY = 'ide-files';
 
 export type FileType = 'file' | 'folder';
 
@@ -107,7 +109,45 @@ const FileContext = createContext<FileContextType | undefined>(undefined);
 
 export function FileProvider({ children }: { children: ReactNode }) {
     const [files, setFiles] = useState<FileNode[]>(initialFiles);
-    const [activeFile, setActiveFile] = useState<FileNode | null>(initialFiles[0].children![0]);
+    const [activeFile, setActiveFile] = useState<FileNode | null>(null);
+    const [loaded, setLoaded] = useState(false);
+
+    // Load initial files
+    useEffect(() => {
+        // Load from LocalStorage
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                setFiles(JSON.parse(saved));
+            } else {
+                setFiles(initialFiles);
+            }
+        } catch (error) {
+            console.error('Failed to load files from storage:', error);
+            setFiles(initialFiles);
+        }
+        setLoaded(true);
+    }, []);
+
+    // Save to storage whenever files change
+    useEffect(() => {
+        if (!loaded) return;
+
+        // Save to LocalStorage
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(files));
+        } catch (error) {
+            console.error('Failed to save files to storage:', error);
+        }
+    }, [files, loaded]);
+
+    // Set active file on load
+    useEffect(() => {
+        if (loaded && !activeFile && files.length > 0) {
+            const firstFile = files[0]?.children?.[0];
+            setActiveFile(firstFile || null);
+        }
+    }, [loaded, files, activeFile]);
 
     const selectFile = (file: FileNode) => {
         if (file.type === 'file') {
@@ -116,8 +156,6 @@ export function FileProvider({ children }: { children: ReactNode }) {
     };
 
     const toggleFolder = (id: string) => {
-        // Basic recursive toggle logic or assume flat for now if simplified
-        // Supporting 1 level deep for demo
         setFiles(prev => prev.map(node => {
             if (node.id === id) {
                 return { ...node, isOpen: !node.isOpen };
@@ -128,8 +166,6 @@ export function FileProvider({ children }: { children: ReactNode }) {
 
     const updateFileContent = (id: string, newContent: string) => {
         setFiles(prev => {
-            // Implementation for deep update would be recursive
-            // For this mock, we know structure is Root -> Files
             return prev.map(folder => {
                 if (folder.children) {
                     return {
