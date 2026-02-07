@@ -38,7 +38,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             console.error("Error signing in with Google", error);
             console.error("Error code:", error.code);
             console.error("Error message:", error.message);
-            setError(error.message);
+
+            if (error.code === 'auth/unauthorized-domain') {
+                setError("This domain is not authorized for OAuth operations. Please add it to the authorized domains list in the Firebase Console.");
+            } else {
+                setError(error.message);
+            }
             throw error;
         }
     };

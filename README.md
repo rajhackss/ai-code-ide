@@ -17,7 +17,7 @@ A powerful, browser-based Integrated Development Environment (IDE) built with mo
 -   **Syntax Highlighting**: Support for JavaScript, TypeScript, Python, Java, C++, C, C#, Rust, Go, PHP, Ruby, and more.
 
 ### 🤖 AI Integration
--   **AI Assistant**: Built-in chat panel for coding help and explanations using OpenRouter API.
+-   **AI Assistant**: Built-in chat panel for coding help and explanations using Google Gemini API.
 -   **1-Click Code Fix**: "Fix Errors" button that automatically analyzes and corrects bugs in your code using Generative AI.
 
 ### ⚡ Seamless Workflow
@@ -34,7 +34,7 @@ A powerful, browser-based Integrated Development Environment (IDE) built with mo
 -   **Auth**: [Firebase Authentication](https://firebase.google.com/docs/auth)
 -   **Editor**: [`@monaco-editor/react`](https://github.com/suren-atoyan/monaco-react)
 -   **Icons**: [Lucide React](https://lucide.dev/)
--   **AI**: OpenRouter API integration
+-   **AI**: Google Gemini API integration
 
 ## 📦 Installation & Setup
 
@@ -52,7 +52,7 @@ A powerful, browser-based Integrated Development Environment (IDE) built with mo
 3.  **Configure Environment**
     Create a `.env` file in the root directory and add your API keys:
     ```env
-    VITE_OPENROUTER_API_KEY=your_openrouter_api_key
+    VITE_GEMINI_API_KEY=your_gemini_api_key__here
     VITE_FIREBASE_API_KEY=your_firebase_api_key
     ```
     *Note: You need a Firebase project with Google Authentication enabled.*

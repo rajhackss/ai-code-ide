@@ -1,3 +1,5 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
 interface AIResponse {
     content: string;
     error?: string;
@@ -7,49 +9,41 @@ export async function generateAIResponse(
     prompt: string,
     contextFiles: { name: string; content: string; language: string }[] = []
 ): Promise<AIResponse> {
-    const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
     if (!apiKey) {
         return { content: '', error: 'API Key is missing. Please check your .env file.' };
     }
 
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest", systemInstruction: "You are an expert AI coding assistant. Provide helpful, concise, and correct code explanations and solutions." });
+
+    // Note: We move the system prompt to getGenerativeModel systemInstruction option if possible, 
+    // or just pass it as system prompt in content. 
+    // Wait, the SDK supports `systemInstruction`. But if not sure, stick to content.
+    // The previous code constructed systemPrompt manually. I'll stick to that but update model name.
+
+
     // Construct system prompt with file context
-    let systemPrompt = "You are an expert AI coding assistant. Provide helpful, concise, and correct code explanations and solutions.";
+    let promptContext = "";
 
     if (contextFiles.length > 0) {
-        systemPrompt += "\n\nHere is the active file context:\n";
+        promptContext += "\n\nHere is the active file context:\n";
         contextFiles.forEach(file => {
-            systemPrompt += `\n--- FILE: ${file.name} (${file.language}) ---\n${file.content}\n--- END FILE ---\n`;
+            promptContext += `\n--- FILE: ${file.name} (${file.language}) ---\n${file.content}\n--- END FILE ---\n`;
         });
     }
 
     try {
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json",
-                "HTTP-Referer": "http://localhost:5173", // Required by OpenRouter
-                "X-Title": "Web AI IDE"
-            },
-            body: JSON.stringify({
-                "model": "openrouter/auto",
-                "messages": [
-                    { "role": "system", "content": systemPrompt },
-                    { "role": "user", "content": prompt }
-                ]
-            })
-        });
+        const result = await model.generateContent([
+            promptContext ? promptContext + "\n\n" + prompt : prompt
+        ]);
+        const response = await result.response;
+        const text = response.text();
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            return { content: '', error: `API Error: ${errorData.error?.message || response.statusText}` };
-        }
+        return { content: text };
 
-        const data = await response.json();
-        return { content: data.choices[0].message.content };
-
-    } catch (error) {
-        return { content: '', error: `Network Error: ${error instanceof Error ? error.message : 'Unknown error'}` };
+    } catch (error: any) {
+        return { content: '', error: `AI Error: ${error.message || 'Unknown error'}` };
     }
 }
