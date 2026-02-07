@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Files, Folder, FileCode, Plus, Search, ChevronRight, ChevronDown, Trash2, X } from 'lucide-react';
+import { Files, Folder, FileCode, Plus, Search, ChevronRight, ChevronDown, Trash2, X, LogOut } from 'lucide-react';
 import { useFileContext, type FileNode } from '../contexts/FileContext';
+import { useAuth } from '../contexts/AuthContext';
 
 // ... (FileItem component remains unchanged)
 
@@ -69,6 +70,7 @@ const FileItem = ({ node, depth, activeFileId, onSelect, onToggle, onDelete }: {
 
 export function Sidebar() {
     const { files, activeFile, selectFile, toggleFolder, createFile, deleteFile } = useFileContext();
+    const { user, logout } = useAuth();
     const [showModal, setShowModal] = useState(false);
     const [newFileName, setNewFileName] = useState('');
 
@@ -147,6 +149,28 @@ export function Sidebar() {
                     </div>
                 </div>
             )}
+
+            {/* User Section */}
+            <div className="mt-auto p-4 border-t border-gray-800">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-bold text-white uppercase shrink-0">
+                            {user?.email?.charAt(0) || user?.displayName?.charAt(0) || 'U'}
+                        </div>
+                        <div className="text-xs truncate">
+                            <div className="font-medium text-gray-200">{user?.displayName || 'User'}</div>
+                            <div className="text-gray-500 truncate">{user?.email}</div>
+                        </div>
+                    </div>
+                    <button
+                        onClick={logout}
+                        className="p-1.5 hover:bg-gray-800 rounded text-gray-400 hover:text-red-400 transition-colors"
+                        title="Sign out"
+                    >
+                        <LogOut size={16} />
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
-const STORAGE_KEY = 'ide-files-v4';
+const STORAGE_KEY = 'ide-files-v5';
 
 export type FileType = 'file' | 'folder';
 
@@ -28,25 +28,17 @@ interface FileContextType {
 // Initial Mock Data
 const initialFiles: FileNode[] = [
     {
-        id: 'root',
-        name: 'src',
-        type: 'folder',
-        isOpen: true,
-        children: [
-            {
-                id: '1',
-                name: 'Welcome.md',
-                type: 'file',
-                language: 'markdown',
-                parentId: 'root',
-                content: `# Welcome to your AI-Based Web IDE
+        id: '1',
+        name: 'Welcome.md',
+        type: 'file',
+        language: 'markdown',
+        parentId: undefined, // Top level
+        content: `# Welcome to your AI-Based Web IDE
 
 This is a lightweight, AI-Based IDE.
 
 - Create files (.c, .py, .java) 
 Start coding by creating a new file`
-            }
-        ]
     }
 ];
 
@@ -89,7 +81,8 @@ export function FileProvider({ children }: { children: ReactNode }) {
     // Set active file on load
     useEffect(() => {
         if (loaded && !activeFile && files.length > 0) {
-            const firstFile = files[0]?.children?.[0];
+            // Find first file
+            const firstFile = files.find(f => f.type === 'file') || files[0]?.children?.[0];
             setActiveFile(firstFile || null);
         }
     }, [loaded, files, activeFile]);
@@ -111,16 +104,19 @@ export function FileProvider({ children }: { children: ReactNode }) {
 
     const updateFileContent = (id: string, newContent: string) => {
         setFiles(prev => {
-            return prev.map(folder => {
-                if (folder.children) {
+            return prev.map(node => {
+                if (node.id === id && node.type === 'file') {
+                    return { ...node, content: newContent };
+                }
+                if (node.children) {
                     return {
-                        ...folder,
-                        children: folder.children.map(file =>
+                        ...node,
+                        children: node.children.map(file =>
                             file.id === id ? { ...file, content: newContent } : file
                         )
                     };
                 }
-                return folder;
+                return node;
             });
         });
 
@@ -151,7 +147,7 @@ export function FileProvider({ children }: { children: ReactNode }) {
         return langMap[ext || ''] || 'plaintext';
     };
 
-    const createFile = (name: string, parentId: string = 'root') => {
+    const createFile = (name: string, parentId?: string) => {
         const newFile: FileNode = {
             id: `file-${Date.now()}`,
             name,
@@ -160,6 +156,12 @@ export function FileProvider({ children }: { children: ReactNode }) {
             parentId,
             content: `// ${name}\n`
         };
+
+        if (!parentId) {
+            setFiles(prev => [...prev, newFile]);
+            setActiveFile(newFile);
+            return;
+        }
 
         setFiles(prev => prev.map(folder => {
             if (folder.id === parentId && folder.children) {
@@ -173,7 +175,7 @@ export function FileProvider({ children }: { children: ReactNode }) {
     };
 
     const deleteFile = (id: string) => {
-        setFiles(prev => prev.map(folder => {
+        setFiles(prev => prev.filter(f => f.id !== id).map(folder => {
             if (folder.children) {
                 return { ...folder, children: folder.children.filter(f => f.id !== id) };
             }
