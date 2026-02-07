@@ -1,8 +1,12 @@
 # Modern AI-Powered Web IDE
 
-A powerful, browser-based Integrated Development Environment (IDE) built with modern web technologies. This project features a robust code editor with predictive text, multi-language code execution, and an AI assistant panel—all running in a lightweight, local-only architecture.
+A powerful, browser-based Integrated Development Environment (IDE) built with modern web technologies. This project features a robust code editor with predictive text, multi-language code execution, and an AI assistant panel—all accessible via secure Google Authentication.
 
 ## 🚀 Key Features
+
+### 🔐 Secure Authentication
+-   **Google Sign-In**: integrated secure login using Firebase Authentication.
+-   **User Profile**: Display of user avatar (email initial) and easy logout functionality in the sidebar.
 
 ### 💻 Advanced Editor
 -   **Powered by Monaco Editor**: The same editor engine as VS Code.
@@ -13,24 +17,21 @@ A powerful, browser-based Integrated Development Environment (IDE) built with mo
 -   **Syntax Highlighting**: Support for JavaScript, TypeScript, Python, Java, C++, C, C#, Rust, Go, PHP, Ruby, and more.
 
 ### 🤖 AI Integration
--   **AI Assistant**: Built-in chat panel for coding help and explanations.
+-   **AI Assistant**: Built-in chat panel for coding help and explanations using OpenRouter API.
 -   **1-Click Code Fix**: "Fix Errors" button that automatically analyzes and corrects bugs in your code using Generative AI.
 
-### 🔒 Local-Only Storage
--   **Privacy First**: No cloud database required.
--   **Offline Capable**: Your files are automatically saved to your browser's **Local Storage**.
--   **Persistent Workspace**: Your work remains safe even if you close or reload the browser.
-
-### ⚡ Execution & Tools
+### ⚡ Seamless Workflow
+-   **Flat File System**: Simplified file explorer with root-level file management.
+-   **Local-Only Storage**: Your files are automatically saved to your browser's **Local Storage** for privacy and offline capability.
 -   **Multi-Language Runner**: Execute code directly in the browser using the Piston API.
 -   **Integrated Terminal**: View real-time output and errors.
--   **File Management**: Create, edit, delete, and organize files in a virtual file system.
 
 ## 🛠️ Tech Stack
 
 -   **Frontend**: [React](https://react.dev/) (v19) + [Vite](https://vitejs.dev/)
 -   **Language**: [TypeScript](https://www.typescriptlang.org/)
 -   **Styling**: [Tailwind CSS](https://tailwindcss.com/) (v4) + `clsx`
+-   **Auth**: [Firebase Authentication](https://firebase.google.com/docs/auth)
 -   **Editor**: [`@monaco-editor/react`](https://github.com/suren-atoyan/monaco-react)
 -   **Icons**: [Lucide React](https://lucide.dev/)
 -   **AI**: OpenRouter API integration
@@ -49,10 +50,12 @@ A powerful, browser-based Integrated Development Environment (IDE) built with mo
     ```
 
 3.  **Configure Environment**
-    Create a `.env` file in the root directory and add your OpenRouter API key:
+    Create a `.env` file in the root directory and add your API keys:
     ```env
-    VITE_OPENROUTER_API_KEY=your_api_key_here
+    VITE_OPENROUTER_API_KEY=your_openrouter_api_key
+    VITE_FIREBASE_API_KEY=your_firebase_api_key
     ```
+    *Note: You need a Firebase project with Google Authentication enabled.*
 
 4.  **Start the development server**
     ```bash
@@ -66,12 +69,14 @@ A powerful, browser-based Integrated Development Environment (IDE) built with mo
 
 ## 🎮 Usage Guide
 
-1.  **File Explorer**: Use the sidebar to create (`+`) files.
+1.  **Login**: Sign in using your Google account.
+2.  **File Explorer**: Use the sidebar to create (`+`) files.
     -   *Tip*: Use `.c`, `.cpp`, `.py`, or `.java` extensions to enable predictive text.
-2.  **Coding**: Type code in the editor.
+3.  **Coding**: Type code in the editor.
     -   *Try*: Type `inc` in C for `#include`, or `psvm` in Java for `main`.
-3.  **Run Code**: Click the **Run** button (top right) to execute.
-4.  **Fix Errors**: Click the **Wand Icon** to have AI instantly debug your code.
+4.  **Run Code**: Click the **Run** button (top right) to execute.
+5.  **Fix Errors**: Click the **Wand Icon** to have AI instantly debug your code.
+6.  **Logout**: Click the logout icon in the sidebar to sign out.
 
 ## 🤝 Contributing
 
