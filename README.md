@@ -1,4 +1,4 @@
-# Modern Web IDE
+# Modern Ai-Based Web IDE
 
 A powerful, browser-based Integrated Development Environment (IDE) built with modern web technologies. This project features a robust code editor, multi-language code execution, and an AI assistant panel.
 
