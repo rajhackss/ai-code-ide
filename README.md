@@ -1,73 +1,70 @@
-# React + TypeScript + Vite
+# Modern Web IDE
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A powerful, browser-based Integrated Development Environment (IDE) built with modern web technologies. This project features a robust code editor, multi-language code execution, and an AI assistant panel.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-   **Advanced Code Editor**: Powered by [Monaco Editor](https://microsoft.github.io/monaco-editor/) (VS Code's editor), supporting syntax highlighting, sensing, and more.
+-   **Multi-Language Execution**: Execute code directly in the browser using the [Piston API](https://github.com/engineer-man/piston). Supported languages include:
+    -   JavaScript, TypeScript
+    -   Python
+    -   Java, C++, C, C#
+    -   Rust, Go
+    -   PHP, Ruby
+-   **File Management**: Create, edit, and organize files within the IDE (Virtual File System).
+-   **AI Assistance**: Integrated AI Panel for coding help and suggestions.
+-   **Responsive Design**: A modern, clean interface built with Tailwind CSS.
+-   **Integrated Terminal**: View execution output and errors in a built-in terminal window.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This project is built using the following technologies and libraries:
 
-## Expanding the ESLint configuration
+-   **Frontend Framework**: [React](https://react.dev/) (v19)
+-   **Build Tool**: [Vite](https://vitejs.dev/)
+-   **Language**: [TypeScript](https://www.typescriptlang.org/)
+-   **Styling**:
+    -   [Tailwind CSS](https://tailwindcss.com/) (v4)
+    -   `clsx` & `tailwind-merge` for dynamic class management
+    -   [PostCSS](https://postcss.org/) & [Autoprefixer](https://github.com/postcss/autoprefixer)
+-   **Icons**: [Lucide React](https://lucide.dev/)
+-   **Editor Component**: [`@monaco-editor/react`](https://github.com/suren-atoyan/monaco-react)
+-   **Linting**: [ESLint](https://eslint.org/)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📦 Installation & Setup
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1.  **Clone the repository**
+    ```bash
+    git clone <repository-url>
+    cd ide
+    ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+3.  **Start the development server**
+    ```bash
+    npm run dev
+    ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+4.  **Build for production**
+    ```bash
+    npm run build
+    ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🎮 Usage
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1.  **Edit Code**: Select a file from the sidebar or create a new one. Write code in the main editor window.
+2.  **Run Code**: Click the "Run" button to execute your code via the Piston API.
+3.  **View Output**: Results will appear in the specific terminal/output panel.
+4.  **AI Help**: Open the AI panel to get assistance with your code.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+[MIT](LICENSE)
