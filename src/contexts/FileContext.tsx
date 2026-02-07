@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
-const STORAGE_KEY = 'ide-files-v3';
+const STORAGE_KEY = 'ide-files-v4';
 
 export type FileType = 'file' | 'folder';
 
@@ -43,9 +43,8 @@ const initialFiles: FileNode[] = [
 
 This is a lightweight, AI-Based IDE.
 
-- **Create files (.c, .py, .java) **
-
-Start coding by creating a new file!`
+- Create files (.c, .py, .java) 
+Start coding by creating a new file`
             }
         ]
     }
