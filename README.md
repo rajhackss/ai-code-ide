@@ -77,10 +77,3 @@ A powerful, browser-based Integrated Development Environment (IDE) built with mo
 5.  **Fix Errors**: Click the **Wand Icon** to have AI instantly debug your code.
 6.  **Logout**: Click the logout icon in the sidebar to sign out.
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-[MIT](LICENSE)
