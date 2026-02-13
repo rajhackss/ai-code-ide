@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return (
         <AuthContext.Provider value={{ user, loading, error, signInWithGoogle, logout }}>
-            {!loading && children}
+            {children}
         </AuthContext.Provider>
     );
 }
