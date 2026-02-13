@@ -20,11 +20,11 @@ const genAI = new GoogleGenerativeAI(apiKey);
 
 async function checkModels() {
     const modelsToCheck = [
+        "gemini-flash-latest",
+        "gemini-2.0-flash",
+        "gemini-2.0-flash-lite",
         "gemini-1.5-flash",
-        "gemini-1.5-flash-latest",
-        "gemini-1.5-flash-001",
-        "gemini-pro",
-        "gemini-1.0-pro"
+        "gemini-1.5-pro"
     ];
 
     for (const modelName of modelsToCheck) {
