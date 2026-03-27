@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Files, Folder, FileCode, Plus, Search, ChevronRight, ChevronDown, Trash2, X, LogOut } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Files, Folder, FileCode, Plus, Search, ChevronRight, ChevronDown, Trash2, X, LogOut, Upload } from 'lucide-react';
 import { useFileContext, type FileNode } from '../contexts/FileContext';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -73,6 +73,7 @@ export function Sidebar() {
     const { user, logout } = useAuth();
     const [showModal, setShowModal] = useState(false);
     const [newFileName, setNewFileName] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleCreateFile = () => {
         if (newFileName.trim()) {
@@ -82,18 +83,55 @@ export function Sidebar() {
         }
     };
 
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFiles = Array.from(e.target.files || []);
+        if (selectedFiles.length === 0) return;
+
+        selectedFiles.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const content = event.target?.result as string;
+                if (content !== undefined) {
+                    createFile(file.name, undefined, content);
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
     return (
         <div className="h-full w-64 bg-gray-900 border-r border-gray-800 flex flex-col relative">
             <div className="p-4 border-b border-gray-800 flex items-center justify-between">
                 <span className="font-semibold text-gray-200 flex items-center gap-2">
                     <Files size={18} /> Explorer
                 </span>
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="p-1 hover:bg-gray-800 rounded text-gray-400 hover:text-white transition-colors"
-                >
-                    <Plus size={16} />
-                </button>
+                <div className="flex items-center gap-1">
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="p-1 hover:bg-gray-800 rounded text-gray-400 hover:text-white transition-colors"
+                        title="Import File"
+                    >
+                        <Upload size={16} />
+                    </button>
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="p-1 hover:bg-gray-800 rounded text-gray-400 hover:text-white transition-colors"
+                        title="New File"
+                    >
+                        <Plus size={16} />
+                    </button>
+                </div>
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    multiple
+                />
             </div>
 
             <div className="p-2">

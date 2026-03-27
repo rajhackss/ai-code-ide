@@ -21,7 +21,7 @@ interface FileContextType {
     selectFile: (file: FileNode) => void;
     updateFileContent: (id: string, newContent: string) => void;
     toggleFolder: (id: string) => void;
-    createFile: (name: string, parentId?: string) => void;
+    createFile: (name: string, parentId?: string, initialContent?: string) => void;
     deleteFile: (id: string) => void;
 }
 
@@ -147,14 +147,14 @@ export function FileProvider({ children }: { children: ReactNode }) {
         return langMap[ext || ''] || 'plaintext';
     };
 
-    const createFile = (name: string, parentId?: string) => {
+    const createFile = (name: string, parentId?: string, initialContent?: string) => {
         const newFile: FileNode = {
             id: `file-${Date.now()}`,
             name,
             type: 'file',
             language: getLanguageFromName(name),
             parentId,
-            content: `// ${name}\n`
+            content: initialContent !== undefined ? initialContent : `// ${name}\n`
         };
 
         if (!parentId) {
