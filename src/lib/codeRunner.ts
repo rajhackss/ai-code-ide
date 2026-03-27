@@ -52,9 +52,10 @@ export async function runCode(code: string, language: string): Promise<Execution
         });
 
         if (!response.ok) {
+            const text = await response.text();
             return {
                 output: '',
-                error: `Execution failed: ${response.statusText}`,
+                error: `HTTP ${response.status} ${response.statusText}\nBody: ${text}\nCompiler: ${compiler}`,
                 language
             };
         }
