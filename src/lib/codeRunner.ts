@@ -4,25 +4,25 @@ interface ExecutionResult {
     language: string;
 }
 
-// Language to Piston runtime mapping
-const languageMap: Record<string, { language: string; version: string }> = {
-    javascript: { language: 'javascript', version: '18.15.0' },
-    typescript: { language: 'typescript', version: '5.0.3' },
-    python: { language: 'python', version: '3.10.0' },
-    java: { language: 'java', version: '15.0.2' },
-    cpp: { language: 'cpp', version: '10.2.0' },
-    c: { language: 'c', version: '10.2.0' },
-    rust: { language: 'rust', version: '1.68.2' },
-    go: { language: 'go', version: '1.16.2' },
-    php: { language: 'php', version: '8.2.3' },
-    ruby: { language: 'ruby', version: '3.0.1' },
-    csharp: { language: 'csharp', version: '6.12.0' },
+// Language to Wandbox compiler mapping
+const languageMap: Record<string, string> = {
+    javascript: 'nodejs-20.17.0',
+    typescript: 'typescript-5.6.2',
+    python: 'cpython-head',
+    java: 'openjdk-jdk-22+36',
+    cpp: 'gcc-head',
+    c: 'gcc-head-c',
+    rust: 'rust-1.82.0',
+    go: 'go-1.23.2',
+    php: 'php-8.3.12',
+    ruby: 'ruby-3.4.1',
+    csharp: 'mono-6.12.0.199',
 };
 
 export async function runCode(code: string, language: string): Promise<ExecutionResult> {
-    const runtime = languageMap[language];
+    const compiler = languageMap[language];
 
-    if (!runtime) {
+    if (!compiler) {
         return {
             output: '',
             error: `Language "${language}" is not supported for execution.`,
@@ -31,16 +31,24 @@ export async function runCode(code: string, language: string): Promise<Execution
     }
 
     try {
-        const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+        const body: any = {
+            compiler: compiler,
+            save: false
+        };
+
+        // For Java to support "public class Main" we supply the file as Main.java
+        if (language === 'java') {
+            body.codes = [{ file: "Main.java", code: code }];
+        } else {
+            body.code = code;
+        }
+
+        const response = await fetch('https://wandbox.org/api/compile.json', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                language: runtime.language,
-                version: runtime.version,
-                files: [{ content: code }],
-            }),
+            body: JSON.stringify(body),
         });
 
         if (!response.ok) {
@@ -53,17 +61,15 @@ export async function runCode(code: string, language: string): Promise<Execution
 
         const data = await response.json();
 
-        if (data.run) {
-            const stdout = data.run.stdout || '';
-            const stderr = data.run.stderr || '';
-            return {
-                output: stdout + (stderr ? `\n[stderr]\n${stderr}` : ''),
-                error: data.run.code !== 0 ? stderr : undefined,
-                language
-            };
-        }
+        const stdout = data.program_output || data.compiler_output || '';
+        const stderr = data.program_error || data.compiler_error || '';
+        const hasError = data.status !== '0';
 
-        return { output: '', error: 'Unknown response format', language };
+        return {
+            output: stdout + (stderr && stdout ? `\n[stderr]\n${stderr}` : stderr ? stderr : ''),
+            error: hasError ? (stderr || 'Execution failed with status ' + data.status) : undefined,
+            language
+        };
 
     } catch (error) {
         return {

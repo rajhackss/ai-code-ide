@@ -16,34 +16,48 @@ export async function generateAIResponse(
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest", systemInstruction: "You are an expert AI coding assistant. Provide helpful, concise, and correct code explanations and solutions." });
 
-    // Note: We move the system prompt to getGenerativeModel systemInstruction option if possible, 
-    // or just pass it as system prompt in content. 
-    // Wait, the SDK supports `systemInstruction`. But if not sure, stick to content.
-    // The previous code constructed systemPrompt manually. I'll stick to that but update model name.
-
+    // Priority list of models to try
+    const modelsToTry = ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-flash-latest"];
 
     // Construct system prompt with file context
     let promptContext = "";
 
+    // Limit context to prevent token overflow (approx. 20k chars safety limit for very long files)
+    const MAX_CONTEXT_CHARS = 20000;
+
     if (contextFiles.length > 0) {
         promptContext += "\n\nHere is the active file context:\n";
         contextFiles.forEach(file => {
-            promptContext += `\n--- FILE: ${file.name} (${file.language}) ---\n${file.content}\n--- END FILE ---\n`;
+            const content = file.content.length > MAX_CONTEXT_CHARS
+                ? file.content.substring(0, MAX_CONTEXT_CHARS) + "\n...[Content Truncated]..."
+                : file.content;
+            promptContext += `\n--- FILE: ${file.name} (${file.language}) ---\n${content}\n--- END FILE ---\n`;
         });
     }
 
-    try {
-        const result = await model.generateContent([
-            promptContext ? promptContext + "\n\n" + prompt : prompt
-        ]);
-        const response = await result.response;
-        const text = response.text();
+    const finalPrompt = promptContext ? promptContext + "\n\n" + prompt : prompt;
+    let lastError = null;
 
-        return { content: text };
+    for (const modelName of modelsToTry) {
+        try {
+            const model = genAI.getGenerativeModel({
+                model: modelName,
+                systemInstruction: "You are an expert AI coding assistant. Provide helpful, concise, and correct code explanations and solutions."
+            });
 
-    } catch (error: any) {
-        return { content: '', error: `AI Error: ${error.message || 'Unknown error'}` };
+            const result = await model.generateContent([finalPrompt]);
+            const response = await result.response;
+            const text = response.text();
+
+            return { content: text };
+
+        } catch (error: any) {
+            console.warn(`Failed with model ${modelName}:`, error.message);
+            lastError = error;
+            // Continue to next model
+        }
     }
+
+    return { content: '', error: `AI Error: All models failed. Last error: ${lastError?.message || 'Unknown error'}` };
 }
