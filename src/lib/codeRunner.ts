@@ -31,17 +31,16 @@ export async function runCode(code: string, language: string): Promise<Execution
     }
 
     try {
+        let finalCode = code;
+        if (language === 'java') {
+            finalCode = finalCode.replace(/public\s+class\s+([A-Za-z0-9_]+)/g, 'class $1');
+        }
+
         const body: any = {
             compiler: compiler,
+            code: finalCode,
             save: false
         };
-
-        // For Java to support "public class Main" we supply the file as Main.java
-        if (language === 'java') {
-            body.codes = [{ file: "Main.java", code: code }];
-        } else {
-            body.code = code;
-        }
 
         const response = await fetch('https://wandbox.org/api/compile.json', {
             method: 'POST',
